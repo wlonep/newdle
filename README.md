@@ -29,6 +29,7 @@ For more information, including how to localize the interface to your language, 
 The interface is translated by default in both English and Spanish - other translations are very welcome! 
 
 Thanks to Carolyn O'Meara (https://github.com/ckomeara) for providing the Spanish translation.
+Thanks to Haowen Jiang (https://github.com/howard-haowen) for providing the 中文 translation
 
 ## On to the original stuff from @hannahcode...
 
