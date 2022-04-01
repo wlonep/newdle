@@ -10,9 +10,9 @@
     "howToPlay": "遊戲規則",
     "instructions": "您總共有 {{tries}} 次猜測單詞的機會。每輸入一個單詞，方塊將會改變顏色，透過顏色的變化您將能推測正解。",
     "pickYourLanguage": "選擇語言",
-    "correctSpotInstructions": "字母 K 出現在正解當中，並且在正確的位置。",
-    "wrongSpotInstructions": "字母 E 出現在正解當中，但不在正確的位置。",
-    "notInWordInstructions": "字母 I 不在正解當中。",
+    "correctSpotInstructions": "字母 W 出現在正解當中，並且在正確的位置。",
+    "wrongSpotInstructions": "字母 L 出現在正解當中，但不在正確的位置。",
+    "notInWordInstructions": "字母 U 不在正解當中。",
     "guessDistribution": "猜詞分佈",
     "statistics": "統計",
     "totalTries": "總猜測次數",
@@ -21,26 +21,68 @@
     "bestStreak": "最佳連續獲勝次數",
     "newWordCountdown": "距離下個新單詞出現還有",
     "share": "分享",
-    "firstExampleWord": [
-        "K",
-        "E",
-        "M",
-        "A",
-        "N"
+    "firstExampleWord": [{
+            "letter": "W",
+            "highlight": true
+        },
+        {
+            "letter": "E",
+            "highlight": false
+        },
+        {
+            "letter": "A",
+            "highlight": false
+        },
+        {
+            "letter": "R",
+            "highlight": false
+        },
+        {
+            "letter": "Y",
+            "highlight": false
+        }
     ],
-    "secondExampleWord": [
-        "A",
-        "N",
-        "E",
-        "M",
-        "A"
+    "secondExampleWord": [{
+            "letter": "P",
+            "highlight": false
+        },
+        {
+            "letter": "I",
+            "highlight": false
+        },
+        {
+            "letter": "L",
+            "highlight": true
+        },
+        {
+            "letter": "O",
+            "highlight": false
+        },
+        {
+            "letter": "T",
+            "highlight": false
+        }
     ],
-    "thirdExampleWord": [
-        "K",
-        "A",
-        "S",
-        "I",
-        "V"
+    "thirdExampleWord": [{
+            "letter": "V",
+            "highlight": false
+        },
+        {
+            "letter": "A",
+            "highlight": false
+        },
+        {
+            "letter": "G",
+            "highlight": false
+        },
+        {
+            "letter": "U",
+            "highlight": true
+        },
+        {
+            "letter": "E",
+            "highlight": false
+        }
     ],
     "aboutAuthorSentence": "本遊戲源自 Wordle 開源專案，由<3>{{author}}</3>改編為排灣語版本。",
     "aboutCodeSentence": "原專案作者為<3>Hannah Park</3>，原始碼在<1>the original code</1>。本遊戲的開發依據為<5>Aidan Pine's fork</5>。",
