@@ -15,4 +15,5 @@ export const CONFIG = {
   startDate: 'January 1, 2022 00:00:00', // what date and time to start your game from
   defaultLang: 'en', // the default interface language
   availableLangs: ['en', 'es', 'zh'], // the options available to the user for translation languages
+  escapeSpecialCharacters: true, // whether to escape all characters in the orthography.
 }
