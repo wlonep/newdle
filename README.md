@@ -26,9 +26,11 @@ _To adapt for your language (the basics):_
 
 For more information, including how to localize the interface to your language, visit the blog article: https://blog.mothertongues.org/wordle/.
 
-The interface is translated by default in English, Kiswahili, Mandarin and Spanish - other translations are very welcome!  These translations require
-1. Adding an appropriate localiztion file in `public/locales`
-2. Updating the other localization files in `public/locales` to include the additional langauge
+The interface is translated by default in English, Kiswahili, Mandarin and Spanish - other translations are very welcome!  To add translations please submit a pull request with the following steps:
+
+1. Add an appropriate localiztion file in `public/locales`
+2. Update the other localization files in `public/locales` to include the additional langauge
+3. Update the `CONFIG.availableLangs` variable in `src/constants/config.ts` to include your language. 
 
 Thanks to Carolyn O'Meara (https://github.com/ckomeara) for providing the Spanish translation.
 Thanks to Haowen Jiang (https://github.com/howard-haowen) for providing the 中文 translation.

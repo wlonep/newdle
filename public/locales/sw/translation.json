@@ -78,11 +78,11 @@
         },
         {
             "letter": "U",
-            "highlight": false
+            "highlight": true
         },
         {
             "letter": "Z",
-            "highlight": true
+            "highlight": false
         },
         {
             "letter": "A",
