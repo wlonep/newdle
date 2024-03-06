@@ -1,7 +1,7 @@
 export const CONFIG = {
-  tries: 6, // This changes how many tries you get to finish the game
+  tries: 7, // This changes how many tries you get to finish the game
   language: 'YourLanguageHere', // This changes the display name for your language
-  wordLength: 5, // This sets how long each word is based on how many characters (as defined in orthography.ts) are in each word
+  wordLength: 6, // This sets how long each word is based on how many characters (as defined in orthography.ts) are in each word
   author: 'YourNameHere', // Put your name here so people know who made this game!
   authorWebsite: 'YourLinkHere', // Put a link to your website or social media here
   wordListSource: 'YourDictionarySource', // Describe the source material for your words here
