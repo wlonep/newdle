@@ -1,38 +1,32 @@
-import { getGuessStatuses } from './statuses'
-import { solutionIndex } from './words'
-import { CONFIG } from '../constants/config'
+import {GuessInfo} from "../constants/types";
 
-export const shareStatus = (guesses: string[][], lost: boolean) => {
-  navigator.clipboard.writeText(
-    CONFIG.language +
-      solutionIndex +
-      ' ' +
-      `${lost ? 'X' : guesses.length}` +
-      '/' +
-      CONFIG.tries.toString() +
-      '\n\n' +
-      generateEmojiGrid(guesses) +
-      '\n\n' +
-      window.location.href.replace(`${window.location.protocol}//`, '')
-  )
+export const shareStatus = (title: string, guesses: GuessInfo[], lost: boolean, rank: number) => {
+    let titleText = `${title}#${guesses[0].id} [${lost ? 'X' : guesses.length} / 6]`
+    if (rank > 0) {
+        titleText += ` (${rank}위)`
+    }
+
+    navigator.clipboard.writeText(
+        `${titleText}\n\n` +
+        generateEmojiGrid(guesses) + '\n\n' +
+        window.location.href.replace(`${window.location.protocol}//`, '')
+    ).then()
 }
 
-export const generateEmojiGrid = (guesses: string[][]) => {
-  return guesses
-    .map((guess) => {
-      const status = getGuessStatuses(guess)
-      return guess
-        .map((letter, i) => {
-          switch (status[i]) {
-            case 'correct':
-              return '🟩'
-            case 'present':
-              return '🟨'
-            default:
-              return '⬜'
-          }
+export const generateEmojiGrid = (guesses: GuessInfo[]) => {
+    return guesses
+        .map((guess) => {
+            return guess.statuses.map((letter, _) => {
+                switch (letter) {
+                    case 'correct':
+                        return '🟩'
+                    case 'present':
+                        return '🟨'
+                    default:
+                        return '⬜'
+                }
+            })
+                .join('')
         })
-        .join('')
-    })
-    .join('\n')
+        .join('\n')
 }

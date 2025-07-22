@@ -1,59 +1,20 @@
-import { CONFIG } from './config'
-
 export const ORTHOGRAPHY = [
-  'a',
-  'aa',
-  'b',
-  'd',
-  'e',
-  'ee',
-  'g',
-  'g̱',
-  'gw',
-  'gy',
-  'h',
-  'hl',
-  'i',
-  'ii',
-  'j',
-  'k',
-  'ḵ',
-  "k'",
-  "ḵ'",
-  'kw',
-  "kw'",
-  'ky',
-  "ky'",
-  'l',
-  "'l",
-  'm',
-  "'m",
-  'n',
-  "'n",
-  'o',
-  'oo',
-  'p',
-  "p'",
-  's',
-  't',
-  "t'",
-  'ts',
-  "ts'",
-  'u',
-  'uu',
-  'w',
-  "'w",
-  'x',
-  'x̱',
-  'xw',
-  'y',
-  "'y",
-  "'",
-  '?',
+  'ㅂ', 'ㅈ', 'ㄷ', 'ㄱ', 'ㅅ', 'ㅛ', 'ㅕ', 'ㅑ',
+  'ㅁ', 'ㄴ', 'ㅇ', 'ㄹ', 'ㅎ', 'ㅗ', 'ㅓ', 'ㅏ', "ㅣ",
+  "ㅋ", 'ㅌ', "ㅊ", 'ㅍ', "ㅠ", 'ㅜ', "ㅡ"
 ]
 
-if (CONFIG.normalization) {
-  ORTHOGRAPHY.forEach(
-    (val, i) => (ORTHOGRAPHY[i] = val.normalize(CONFIG.normalization))
-  )
+export type CharValue = typeof ORTHOGRAPHY[number]
+
+
+export const COMPOUND: Record<string, string[]> = {
+  'ㅐ': ['ㅏ', 'ㅣ'],
+  'ㅔ': ['ㅓ', 'ㅣ'],
+  'ㅒ': ['ㅑ', 'ㅣ'],
+  'ㅖ': ['ㅕ', 'ㅣ'],
+  'ㄲ': ['ㄱ', 'ㄱ'],
+  'ㄸ': ['ㄷ', 'ㄷ'],
+  'ㅃ': ['ㅂ', 'ㅂ'],
+  'ㅆ': ['ㅅ', 'ㅅ'],
+  'ㅉ': ['ㅈ', 'ㅈ'],
 }

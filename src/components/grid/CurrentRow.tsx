@@ -1,22 +1,23 @@
-import { Cell } from './Cell'
-import { CONFIG } from '../../constants/config'
+import {Cell} from './Cell'
 
 type Props = {
   guess: string[]
+  wordLength: number
+  isInvalid: boolean
 }
 
-export const CurrentRow = ({ guess }: Props) => {
+export const CurrentRow = ({guess, wordLength, isInvalid}: Props) => {
   const splitGuess = guess
-  const emptyCells = Array.from(Array(CONFIG.wordLength - splitGuess.length))
+  const emptyCells = Array.from(Array(wordLength - splitGuess.length))
 
   return (
-    <div className="flex justify-center mb-1">
-      {splitGuess.map((letter, i) => (
-        <Cell key={i} value={letter} />
-      ))}
-      {emptyCells.map((_, i) => (
-        <Cell key={i} />
-      ))}
-    </div>
+      <div className="flex justify-center mb-1 px-2">
+        {splitGuess.map((letter, i) => (
+            <Cell key={i} value={letter} isInvalid={isInvalid} wordLength={wordLength}/>
+        ))}
+        {emptyCells.map((_, i) => (
+            <Cell key={i} wordLength={wordLength}/>
+        ))}
+      </div>
   )
 }

@@ -1,23 +1,22 @@
 import {
-  GameStats,
   loadStatsFromLocalStorage,
   saveStatsToLocalStorage,
 } from './localStorage'
+import {GameStats} from "../constants/types";
 
-import { CONFIG } from '../constants/config'
-
-// In stats array elements 0-5 are successes in 1-6 trys
 
 export const addStatsForCompletedGame = (
   gameStats: GameStats,
-  count: number
+  count: number,
+  path: string,
+  maxTries: number
 ) => {
   // Count is number of incorrect guesses before end.
   const stats = { ...gameStats }
 
   stats.totalGames += 1
 
-  if (count > CONFIG.tries - 1) {
+  if (count > maxTries - 1) {
     // A fail situation
     stats.currentStreak = 0
     stats.gamesFailed += 1
@@ -32,7 +31,7 @@ export const addStatsForCompletedGame = (
 
   stats.successRate = getSuccessRate(stats)
 
-  saveStatsToLocalStorage(stats)
+  saveStatsToLocalStorage(path, stats)
   return stats
 }
 
@@ -45,8 +44,8 @@ const defaultStats: GameStats = {
   successRate: 0,
 }
 
-export const loadStats = () => {
-  return loadStatsFromLocalStorage() || defaultStats
+export const loadStats = (path: string) => {
+  return loadStatsFromLocalStorage(path) || defaultStats
 }
 
 const getSuccessRate = (gameStats: GameStats) => {

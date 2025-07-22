@@ -1,14 +1,17 @@
-import { Cell } from './Cell'
-import { CONFIG } from '../../constants/config'
+import {Cell} from './Cell'
 
-export const EmptyRow = () => {
-  const emptyCells = Array.from(Array(CONFIG.wordLength))
+type Props = {
+    wordLength: number
+}
 
-  return (
-    <div className="flex justify-center mb-1">
-      {emptyCells.map((_, i) => (
-        <Cell key={i} />
-      ))}
-    </div>
-  )
+export const EmptyRow = ({wordLength}: Props) => {
+    const emptyCells = Array.from(Array(wordLength))
+
+    return (
+        <div className="flex justify-center mb-1 px-2">
+            {emptyCells.map((_, i) => (
+                <Cell key={i} wordLength={wordLength}/>
+            ))}
+        </div>
+    )
 }

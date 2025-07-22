@@ -1,57 +1,49 @@
-import { CONFIG } from '../../constants/config'
-import { BaseModal } from './BaseModal'
-import { Trans, useTranslation } from 'react-i18next'
+import {BaseModal} from './BaseModal'
 
 type Props = {
-  isOpen: boolean
-  handleClose: () => void
+    isOpen: boolean
+    handleClose: () => void
 }
 
-export const AboutModal = ({ isOpen, handleClose }: Props) => {
-  const { t } = useTranslation()
-  return (
-    <BaseModal title={t('about')} isOpen={isOpen} handleClose={handleClose}>
-      <p className="text-sm text-gray-500">
-        <Trans
-          i18nKey="aboutAuthorSentence"
-          values={{ language: CONFIG.language, author: CONFIG.author }}
-        >
-          This is an open source word guessing game adapted to
-          {CONFIG.language} by
-          <a href={CONFIG.authorWebsite} className="underline font-bold">
-            {CONFIG.author}
-          </a>{' '}
-        </Trans>
-        <Trans i18nKey="aboutCodeSentence">
-          Have a look at
-          <a
-            href="https://github.com/roedoejet/AnyLanguage-Word-Guessing-Game"
-            className="underline font-bold"
-          >
-            Aidan Pine's fork
-          </a>
-          and customize it for another language!
-        </Trans>
-        <Trans
-          i18nKey="aboutDataSentence"
-          values={{ wordListSource: CONFIG.wordListSource }}
-        >
-          The words for this game were sourced from
-          <a href={CONFIG.wordListSourceLink} className="underline font-bold">
-            {CONFIG.wordListSource}
-          </a>
-          .
-        </Trans>
-        <Trans i18nKey="aboutOriginalSentence">
-          You can also
-          <a
-            href="https://www.powerlanguage.co.uk/wordle/"
-            className="underline font-bold"
-          >
-            play the original here
-          </a>
-        </Trans>
-      </p>
-    </BaseModal>
-  )
+export const AboutModal = ({isOpen, handleClose}: Props) => {
+    return (
+        <BaseModal title="이 게임은 뭔가요?" isOpen={isOpen} handleClose={handleClose}>
+            <p className="text-base text-gray-700 mt-3">
+                <b>“뉴들”</b>은&nbsp;
+                <a href="https://kordle.kr/" target="_blank"
+                   className="text-stone-700 underline underline-offset-2 hover:text-blue-700">
+                    꼬들
+                </a>
+                &nbsp;프로젝트에서 모티브를 얻어 제작된<br/>
+                한글 낱자 기반 단어 맞히기 게임으로,<br/>
+                <a href="https://github.com/roedoejet/AnyLanguage-Word-Guessing-Game" target="_blank"
+                   className="text-stone-700 underline underline-offset-2 hover:text-blue-700">
+                    Aidan Pine의 오픈소스 포크
+                </a>
+                를 기반으로 제작되었습니다.<br/>
+                <br/>
+                <a href="https://github.com/wlonep/newdle" target="_blank"
+                   className="text-stone-700 underline underline-offset-2 hover:text-blue-700">GitHub 저장소
+                </a>
+                에서 소스코드를 확인하거나,<br/>
+                <a href="https://blog.wlonep.com/" target="_blank"
+                   className="text-stone-700 underline underline-offset-2 hover:text-blue-700">
+                    개발자 블로그
+                </a>
+                를 통해 개발 과정을 확인해 보세요!<br/>
+                <br/>
+                뉴들에 사용된 단어는&nbsp;
+                <a href="https://stdict.korean.go.kr/main/main.do" target="_blank"
+                   className="text-stone-700 underline underline-offset-2 hover:text-blue-700">
+                    표준국어대사전
+                </a>
+                에서 발췌했습니다.<br/>
+                문의사항이나 의견은&nbsp;
+                <a href="mailto:frin0911@konkuk.ac.kr" target="_blank"
+                   className="text-stone-700 underline underline-offset-2 hover:text-blue-700">
+                    메일
+                </a>로 보내주세요.
+            </p>
+        </BaseModal>
+    )
 }

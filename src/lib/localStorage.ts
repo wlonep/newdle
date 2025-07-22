@@ -1,35 +1,27 @@
-const gameStateKey = 'gameState'
+import {GameStats, GuessInfo} from "../constants/types";
 
 type StoredGameState = {
-  guesses: string[][]
-  solution: string
+  guesses: GuessInfo[];
+  time: string;
+  rank: number;
 }
 
-export const saveGameStateToLocalStorage = (gameState: StoredGameState) => {
-  localStorage.setItem(gameStateKey, JSON.stringify(gameState))
+export const saveGameStateToLocalStorage = (path: string, gameState: StoredGameState) => {
+  localStorage.setItem(`gameState-${path}`, JSON.stringify(gameState))
 }
 
-export const loadGameStateFromLocalStorage = () => {
-  const state = localStorage.getItem(gameStateKey)
+export const loadGameStateFromLocalStorage = (path: string): StoredGameState | null => {
+
+  const state = localStorage.getItem(`gameState-${path}`)
   return state ? (JSON.parse(state) as StoredGameState) : null
 }
 
-const gameStatKey = 'gameStats'
 
-export type GameStats = {
-  winDistribution: number[]
-  gamesFailed: number
-  currentStreak: number
-  bestStreak: number
-  totalGames: number
-  successRate: number
+export const saveStatsToLocalStorage = (path: string, gameStats: GameStats) => {
+  localStorage.setItem(`gameStats-${path}`, JSON.stringify(gameStats))
 }
 
-export const saveStatsToLocalStorage = (gameStats: GameStats) => {
-  localStorage.setItem(gameStatKey, JSON.stringify(gameStats))
-}
-
-export const loadStatsFromLocalStorage = () => {
-  const stats = localStorage.getItem(gameStatKey)
+export const loadStatsFromLocalStorage = (path: string) => {
+  const stats = localStorage.getItem(`gameStats-${path}`)
   return stats ? (JSON.parse(stats) as GameStats) : null
 }

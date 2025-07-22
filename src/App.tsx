@@ -1,215 +1,178 @@
-import { InformationCircleIcon } from '@heroicons/react/outline'
-import { ChartBarIcon } from '@heroicons/react/outline'
-import { TranslateIcon } from '@heroicons/react/outline'
-import { useState, useEffect } from 'react'
-import { Alert } from './components/alerts/Alert'
-import { Grid } from './components/grid/Grid'
-import { Keyboard } from './components/keyboard/Keyboard'
-import { AboutModal } from './components/modals/AboutModal'
-import { InfoModal } from './components/modals/InfoModal'
-import { StatsModal } from './components/modals/StatsModal'
-import { TranslateModal } from './components/modals/TranslateModal'
-import { isWordInWordList, isWinningWord, solution } from './lib/words'
-import { addStatsForCompletedGame, loadStats } from './lib/stats'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
-  loadGameStateFromLocalStorage,
-  saveGameStateToLocalStorage,
-} from './lib/localStorage'
+  faBars,
+  faChartSimple,
+  faCircleQuestion,
+  faXmark,
+} from '@fortawesome/free-solid-svg-icons'
+import React, { useEffect, useState } from 'react'
+import { SideMenu } from './components/menu/SideMenu'
+import { Route, Routes, useLocation } from 'react-router-dom'
+import Main from './pages/Main'
+import Custom from './pages/Custom'
+import Code from './pages/Code'
+import { List } from './pages/List'
+import { Id } from './pages/Id'
+import { AdminLoginModal } from './components/modals/AdminLoginModal'
+import { Panel } from './pages/Panel'
+import { NotFound } from './pages/NotFound'
 
-import { CONFIG } from './constants/config'
-import ReactGA from 'react-ga'
-import '@bcgov/bc-sans/css/BCSans.css'
-import './i18n'
-import { withTranslation, WithTranslation } from 'react-i18next'
-
-const ALERT_TIME_MS = 2000
-
-const App: React.FC<WithTranslation> = ({ t, i18n }) => {
-  const [currentGuess, setCurrentGuess] = useState<Array<string>>([])
-  const [isGameWon, setIsGameWon] = useState(false)
+const App: React.FC = () => {
+  const location = useLocation()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isInfoModalOpen, setIsInfoModalOpen] = useState(false)
-  const [isAboutModalOpen, setIsAboutModalOpen] = useState(false)
-  const [isNotEnoughLetters, setIsNotEnoughLetters] = useState(false)
   const [isStatsModalOpen, setIsStatsModalOpen] = useState(false)
-  const [isI18nModalOpen, setIsI18nModalOpen] = useState(false)
-  const [isWordNotFoundAlertOpen, setIsWordNotFoundAlertOpen] = useState(false)
-  const [isGameLost, setIsGameLost] = useState(false)
-  const [successAlert, setSuccessAlert] = useState('')
-  const [guesses, setGuesses] = useState<string[][]>(() => {
-    const loaded = loadGameStateFromLocalStorage()
-    if (loaded?.solution !== solution) {
-      return []
-    }
-    const gameWasWon = loaded.guesses
-      .map((guess) => guess.join(''))
-      .includes(solution)
-    if (gameWasWon) {
-      setIsGameWon(true)
-    }
-    if (loaded.guesses.length === CONFIG.tries && !gameWasWon) {
-      setIsGameLost(true)
-    }
-    return loaded.guesses
-  })
-  const TRACKING_ID = CONFIG.googleAnalytics
+  const [failMessage, setFailMessage] = useState<string | null>(null)
+  const [loginModal, setLoginModal] = useState(false)
+  const [loginSuccess, setLoginSuccess] = useState(false)
+  const [title, setTitle] = useState('뉴들')
 
-  if (TRACKING_ID && process.env.NODE_ENV !== 'test') {
-    ReactGA.initialize(TRACKING_ID)
-    ReactGA.pageview(window.location.pathname)
+  const props = {
+    isInfoModalOpen,
+    isStatsModalOpen,
+    setIsInfoModalOpen,
+    setIsStatsModalOpen,
+    failMessage,
+    setFailMessage,
+    setTitle,
   }
-  const [stats, setStats] = useState(() => loadStats())
 
   useEffect(() => {
-    saveGameStateToLocalStorage({ guesses, solution })
-  }, [guesses])
+    setFailMessage(null)
+    setIsMenuOpen(false)
+  }, [location.pathname])
 
   useEffect(() => {
-    if (isGameWon) {
-      const WIN_MESSAGES = t('winMessages', { returnObjects: true })
-      setSuccessAlert(
-        WIN_MESSAGES[Math.floor(Math.random() * WIN_MESSAGES.length)]
-      )
-      setTimeout(() => {
-        setSuccessAlert('')
-        setIsStatsModalOpen(true)
-      }, ALERT_TIME_MS)
-    }
-    if (isGameLost) {
-      setTimeout(() => {
-        setIsStatsModalOpen(true)
-      }, ALERT_TIME_MS)
-    }
-  }, [isGameWon, isGameLost, t])
+    const handleClickOutside = (e: MouseEvent) => {
+      const menu = document.getElementById('side-menu')
+      const btn = document.getElementById('menu-btn')
 
-  const onChar = (value: string) => {
-    if (
-      currentGuess.length < CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
-      !isGameWon
-    ) {
-      let newGuess = currentGuess.concat([value])
-      setCurrentGuess(newGuess)
-    }
-  }
+      if (!menu || !isMenuOpen || !btn) return
 
-  const onDelete = () => {
-    setCurrentGuess(currentGuess.slice(0, -1))
-  }
-
-  const onEnter = () => {
-    if (isGameWon || isGameLost) {
-      return
-    }
-    if (!(currentGuess.length === CONFIG.wordLength)) {
-      setIsNotEnoughLetters(true)
-      return setTimeout(() => {
-        setIsNotEnoughLetters(false)
-      }, ALERT_TIME_MS)
-    }
-
-    if (!isWordInWordList(currentGuess.join(''))) {
-      setIsWordNotFoundAlertOpen(true)
-      return setTimeout(() => {
-        setIsWordNotFoundAlertOpen(false)
-      }, ALERT_TIME_MS)
-    }
-    const winningWord = isWinningWord(currentGuess.join(''))
-
-    if (
-      currentGuess.length === CONFIG.wordLength &&
-      guesses.length < CONFIG.tries &&
-      !isGameWon
-    ) {
-      setGuesses([...guesses, currentGuess])
-      setCurrentGuess([])
-
-      if (winningWord) {
-        setStats(addStatsForCompletedGame(stats, guesses.length))
-        return setIsGameWon(true)
-      }
-
-      if (guesses.length === CONFIG.tries - 1) {
-        setStats(addStatsForCompletedGame(stats, guesses.length + 1))
-        setIsGameLost(true)
+      const target = e.target as HTMLElement
+      if (!menu.contains(target) && !btn.contains(target)) {
+        setIsMenuOpen(false)
       }
     }
-  }
-  let translateElement = <div></div>
-  if (CONFIG.availableLangs.length > 1) {
-    translateElement = (
-      <TranslateIcon
-        className="h-6 w-6 cursor-pointer"
-        onClick={() => setIsI18nModalOpen(true)}
-      />
-    )
-  }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [isMenuOpen])
+
+  // const TRACKING_ID = CONFIG.googleAnalytics
+  //
+  // if (TRACKING_ID && process.env.NODE_ENV !== 'test') {
+  //     ReactGA.initialize(TRACKING_ID)
+  //     ReactGA.send({hitType: 'pageview', page: window.location.pathname})
+  // }
 
   return (
     <div className="py-8 max-w-7xl mx-auto sm:px-6 lg:px-8">
-      <div className="flex w-80 mx-auto items-center mb-8">
-        <h1 className="text-xl grow font-bold">
-          {t('gameName', { language: CONFIG.language })}
-        </h1>
-        {translateElement}
-        <InformationCircleIcon
-          className="h-6 w-6 cursor-pointer"
-          onClick={() => setIsInfoModalOpen(true)}
-        />
-        <ChartBarIcon
-          className="h-6 w-6 cursor-pointer"
-          onClick={() => setIsStatsModalOpen(true)}
-        />
-      </div>
-      <Grid guesses={guesses} currentGuess={currentGuess} />
-      <Keyboard
-        onChar={onChar}
-        onDelete={onDelete}
-        onEnter={onEnter}
-        guesses={guesses}
-      />
-      <TranslateModal
-        isOpen={isI18nModalOpen}
-        handleClose={() => setIsI18nModalOpen(false)}
-      />
-      <InfoModal
-        isOpen={isInfoModalOpen}
-        handleClose={() => setIsInfoModalOpen(false)}
-      />
-      <StatsModal
-        isOpen={isStatsModalOpen}
-        handleClose={() => setIsStatsModalOpen(false)}
-        guesses={guesses}
-        gameStats={stats}
-        isGameLost={isGameLost}
-        isGameWon={isGameWon}
-        handleShare={() => {
-          setSuccessAlert(t('gameCopied'))
-          return setTimeout(() => setSuccessAlert(''), ALERT_TIME_MS)
-        }}
-      />
-      <AboutModal
-        isOpen={isAboutModalOpen}
-        handleClose={() => setIsAboutModalOpen(false)}
-      />
+      <header className="fixed top-0 left-0 w-full bg-white shadow-md z-10 h-16">
+        <div className="relative max-w-full mx-auto h-full">
+          <div className="absolute left-5 top-1/2 -translate-y-1/2">
+            <div
+              className="relative w-6 h-6 cursor-pointer"
+              id="menu-btn"
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+            >
+              <FontAwesomeIcon
+                icon={faBars}
+                className={`text-2xl absolute inset-0 transition-all duration-200 transform 
+                                ${
+                                  isMenuOpen
+                                    ? 'opacity-0 scale-90 rotate-90'
+                                    : 'opacity-100 scale-100 rotate-0'
+                                }`}
+              />
+              <FontAwesomeIcon
+                icon={faXmark}
+                className={`text-2xl absolute inset-0 transition-all duration-200 transform 
+                                ${
+                                  isMenuOpen
+                                    ? 'opacity-100 scale-100 rotate-0'
+                                    : 'opacity-0 scale-90 rotate-90'
+                                }`}
+              />
+            </div>
+          </div>
 
-      <button
-        type="button"
-        className="mx-auto mt-8 flex items-center px-2.5 py-1.5 border border-transparent text-xs font-medium rounded text-indigo-700 bg-indigo-100 hover:bg-indigo-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 select-none"
-        onClick={() => setIsAboutModalOpen(true)}
-      >
-        {t('about')}
-      </button>
+          <h1
+            className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2
+                   text-2xl font-bold whitespace-nowrap overflow-hidden text-ellipsis max-w-[50%]"
+          >
+            {title}
+          </h1>
 
-      <Alert message={t('notEnoughLetters')} isOpen={isNotEnoughLetters} />
-      <Alert message={t('wordNotFound')} isOpen={isWordNotFoundAlertOpen} />
-      <Alert message={t('solution', { solution })} isOpen={isGameLost} />
-      <Alert
-        message={successAlert}
-        isOpen={successAlert !== ''}
-        variant="success"
+          <div className="absolute right-12 top-1/2 -translate-y-1/2 flex gap-4">
+            {['', 'long', 'short'].includes(
+              location.pathname.replace('/', '')
+            ) ? (
+              <div className="flex gap-2">
+                <FontAwesomeIcon
+                  icon={faCircleQuestion}
+                  className="text-2xl"
+                  onClick={() => setIsInfoModalOpen(true)}
+                />
+                <FontAwesomeIcon
+                  icon={faChartSimple}
+                  className="text-2xl"
+                  onClick={() => setIsStatsModalOpen(true)}
+                />
+              </div>
+            ) : null}
+            {location.pathname.replace('/', '').includes('custom/code') ||
+            location.pathname.replace('/', '').includes('custom/id') ? (
+              <div className="flex gap-2">
+                <FontAwesomeIcon
+                  icon={faCircleQuestion}
+                  className="text-2xl"
+                  onClick={() => setIsInfoModalOpen(true)}
+                />
+              </div>
+            ) : null}
+          </div>
+        </div>
+        <SideMenu
+          isOpen={isMenuOpen}
+          onClose={() => setIsMenuOpen(false)}
+          setLoginModal={setLoginModal}
+        />
+      </header>
+      <div className="pt-16"></div>
+
+      <Routes>
+        <Route path="/" element={<Main key="normal" {...props} />} />
+        <Route path="/short" element={<Main key="short" {...props} />} />
+        <Route path="/long" element={<Main key="long" {...props} />} />
+        <Route path="/custom/new" element={<Custom {...props} />} />
+        <Route path="/custom/code/:encoded" element={<Code {...props} />} />
+        <Route path="/custom/list" element={<List {...props} />} />
+        <Route path="/custom/id/:id" element={<Id {...props} />} />
+        <Route
+          path="/panel"
+          element={
+            <Panel
+              setTitle={setTitle}
+              failMessage={failMessage}
+              setFailMessage={setFailMessage}
+              setLoginModal={setLoginModal}
+              loginSucess={loginSuccess}
+            />
+          }
+        />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+      <AdminLoginModal
+        isOpen={loginModal}
+        onClose={() => setLoginModal(false)}
+        setFailMessage={setFailMessage}
+        onSucess={() => setLoginSuccess(true)}
       />
     </div>
   )
 }
 
-export default withTranslation()(App)
+export default App
